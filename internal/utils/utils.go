@@ -9,11 +9,23 @@ func SliceToBatches(slice []string, size int) ([][]string, error) {
 		return nil, errors.New("chunk size should be greater than 0")
 	}
 
-	chunksCount := len(slice) / size + 1
-	output := make([][]string, chunksCount)
-	for i := 0; i < len(slice); i++ {
-		sliceIndex := i % size
-		output[sliceIndex] = append(output[sliceIndex], slice[i])
+	if size > len(slice) {
+		return nil, errors.New("chunk size should be less than input slice")
+	}
+
+	chunksCount := len(slice) / size
+	if len(slice) % size != 0 {
+		chunksCount = chunksCount + 1
+	}
+
+	output := make([][]string, 0)
+	for i := 0; i < chunksCount; i ++ {
+		from := i * size
+		to := (i+1) * size
+		if to > len(slice) {
+			to = len(slice)
+		}
+		output = append(output, slice[from:to])
 	}
 
 	return output, nil

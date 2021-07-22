@@ -1,16 +1,19 @@
 package utils
 
-import "errors"
+import (
+	"errors"
+)
 
 func SliceToBatches(slice []string, size int) ([][]string, error) {
 	if size <= 0 {
 		return nil, errors.New("chunk size should be greater than 0")
 	}
 
-	chunksCount := len(slice) / size
+	chunksCount := len(slice) / size + 1
 	output := make([][]string, chunksCount)
-	for i := 0; i < chunksCount; i++ {
-		output[i/chunksCount] = append(output[i/chunksCount], slice[i])
+	for i := 0; i < len(slice); i++ {
+		sliceIndex := i % size
+		output[sliceIndex] = append(output[sliceIndex], slice[i])
 	}
 
 	return output, nil

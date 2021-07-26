@@ -1,6 +1,7 @@
 package utils_test
 
 import (
+	"github.com/ozoncp/ocp-skill-api/internal/models"
 	"github.com/ozoncp/ocp-skill-api/internal/utils"
 	"reflect"
 	"testing"
@@ -72,6 +73,64 @@ func TestInvertMap(t *testing.T) {
 	}
 }
 
+func TestSkillsToBatches(t *testing.T) {
+	type args struct {
+		input []models.Skill
+		size int
+	}
+
+	tests := []struct{
+		name string
+		args args
+		output [][]models.Skill
+		expectedError bool
+	}{
+		{
+			"zero batches",
+			args{[]models.Skill{{1, 1, "BBB"}, {2, 2, "AAA"}}, 0},
+			nil,
+			true,
+		},
+		{
+			"too many batches",
+			args{[]models.Skill{{1, 1, "BBB"}, {2, 2, "AAA"}}, 3},
+			nil,
+			true,
+		},
+		{
+			"chank size less than 0",
+			args{[]models.Skill{{1, 1, "BBB"}, {2, 2, "AAA"}}, -3},
+			nil,
+			true,
+		},
+		{
+			"chank size 1",
+			args{[]models.Skill{{1, 1, "BBB"}, {2, 2, "AAA"}}, 1},
+			[][]models.Skill{{{1, 1, "BBB"}}, {{2, 2, "AAA"}}},
+			false,
+		},
+		{
+			"chank size 3",
+			args{[]models.Skill{{1, 1, "BBB"}, {2, 2, "AAA"},  {3, 3, "XXX"}},
+				3},
+
+			[][]models.Skill{{{1, 1, "BBB"}, {2, 2, "AAA"}, {3, 3, "XXX"}}},
+			false,
+		},
+	}
+	for _, testCase := range tests {
+		t.Run(testCase.name, func(t *testing.T) {
+			output, error := utils.SkillsToBatches(testCase.args.input, testCase.args.size)
+			if (error != nil) != testCase.expectedError  {
+				t.Errorf("Error was expected but not received")
+			}
+			if !reflect.DeepEqual(output, testCase.output) {
+				t.Errorf("Expected output: %v got output: %v", testCase.output, output)
+			}
+		})
+	}
+}
+
 func TestSliceToBatches(t *testing.T) {
 	type args struct {
 		input []string
@@ -135,6 +194,40 @@ func TestSliceToBatches(t *testing.T) {
 	for _, testCase := range tests {
 		t.Run(testCase.name, func(t *testing.T) {
 			output, error := utils.SliceToBatches(testCase.args.input, testCase.args.size)
+			if (error != nil) != testCase.expectedError  {
+				t.Errorf("Error was expected but not received")
+			}
+			if !reflect.DeepEqual(output, testCase.output) {
+				t.Errorf("Expected output: %v got output: %v", testCase.output, output)
+			}
+		})
+	}
+}
+
+func TestSkillsToMap(t *testing.T) {
+	tests := []struct{
+		name string
+		input []models.Skill
+		output map[uint64]models.Skill
+		expectedError bool
+	}{
+		{
+			"empty input",
+			[]models.Skill{},
+			nil,
+			true,
+		},
+		{
+			"correct work",
+			[]models.Skill{{1, 2, "initial"}, {2, 2, "Best developer"}},
+			map[uint64]models.Skill{1:{1, 2, "initial"}, 2:{2, 2, "Best developer"}},
+			false,
+		},
+	}
+
+	for _, testCase := range tests {
+		t.Run(testCase.name, func(t *testing.T) {
+			output, error := utils.SkillsToMap(testCase.input)
 			if (error != nil) != testCase.expectedError  {
 				t.Errorf("Error was expected but not received")
 			}

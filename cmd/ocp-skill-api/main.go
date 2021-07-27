@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -20,12 +21,11 @@ func ReadConfig(paths []string) ([]string, error) {
 		file, error := os.Open(path)
 
 		if error != nil {
-			fmt.Println("can't open file")
+			return "", error
 		}
 		defer func() {
-			if closeErr := file.Close(); closeErr != nil {
-				fmt.Println("can't close file")
-				error = closeErr
+			if error := file.Close(); error != nil {
+				log.Println("can't close file")
 			}
 		}()
 

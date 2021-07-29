@@ -87,34 +87,34 @@ func TestSkillsToBatches(t *testing.T) {
 	}{
 		{
 			"zero batches",
-			args{[]models.Skill{{1, 1, "BBB"}, {2, 2, "AAA"}}, 0},
+			args{[]models.Skill{{Id:1, UserId: 1, Name: "BBB"}, {Id: 2, UserId: 2, Name: "AAA"}}, 0},
 			nil,
 			true,
 		},
 		{
 			"too many batches",
-			args{[]models.Skill{{1, 1, "BBB"}, {2, 2, "AAA"}}, 3},
+			args{[]models.Skill{{Id: 1, UserId: 1, Name: "BBB"}, {Id: 2, UserId: 2, Name: "AAA"}}, 3},
 			nil,
 			true,
 		},
 		{
 			"chank size less than 0",
-			args{[]models.Skill{{1, 1, "BBB"}, {2, 2, "AAA"}}, -3},
+			args{[]models.Skill{{Id: 1, UserId: 1, Name: "BBB"}, {Id: 2, UserId: 2, Name: "AAA"}}, -3},
 			nil,
 			true,
 		},
 		{
 			"chank size 1",
-			args{[]models.Skill{{1, 1, "BBB"}, {2, 2, "AAA"}}, 1},
-			[][]models.Skill{{{1, 1, "BBB"}}, {{2, 2, "AAA"}}},
+			args{[]models.Skill{{Id: 1, UserId: 1, Name: "BBB"}, {Id: 2, UserId: 2, Name: "AAA"}}, 1},
+			[][]models.Skill{{{Id: 1, UserId: 1, Name: "BBB"}}, {{Id: 2, UserId: 2, Name: "AAA"}}},
 			false,
 		},
 		{
 			"chank size 3",
-			args{[]models.Skill{{1, 1, "BBB"}, {2, 2, "AAA"},  {3, 3, "XXX"}},
+			args{[]models.Skill{{Id: 1, UserId: 1, Name: "BBB"}, {Id: 2, UserId: 2, Name: "AAA"},  {Id: 3, UserId: 3, Name: "XXX"}},
 				3},
 
-			[][]models.Skill{{{1, 1, "BBB"}, {2, 2, "AAA"}, {3, 3, "XXX"}}},
+			[][]models.Skill{{{Id: 1, UserId: 1, Name: "BBB"}, {Id: 2, UserId: 2,Name: "AAA"}, {Id: 3, UserId: 3, Name: "XXX"}}},
 			false,
 		},
 	}
@@ -219,8 +219,8 @@ func TestSkillsToMap(t *testing.T) {
 		},
 		{
 			"correct work",
-			[]models.Skill{{1, 2, "initial"}, {2, 2, "Best developer"}},
-			map[uint64]models.Skill{1:{1, 2, "initial"}, 2:{2, 2, "Best developer"}},
+			[]models.Skill{{Id: 1, UserId: 2, Name: "initial"}, {Id: 2, UserId: 2, Name: "Best developer"}},
+			map[uint64]models.Skill{1:{Id: 1, UserId: 2, Name: "initial"}, 2:{Id: 2, UserId: 2, Name: "Best developer"}},
 			false,
 		},
 	}

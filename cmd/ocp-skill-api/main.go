@@ -10,6 +10,8 @@ import (
 
 func main() {
 	fmt.Println("This is Skill API")
+	output, _ := ReadConfig([]string{"conf.json"})
+	fmt.Println(output)
 }
 
 func ReadConfig(paths []string) ([]string, error) {
@@ -35,7 +37,7 @@ func ReadConfig(paths []string) ([]string, error) {
 			return "", error
 		}
 
-		return string(data.Bytes()), nil
+		return data.String(), nil
 	}
 
 	output := make([]string, 0)
@@ -44,7 +46,7 @@ func ReadConfig(paths []string) ([]string, error) {
 		data, error := readFile(path)
 
 		if error != nil {
-			fmt.Sprintf("problems with %v, skip", path)
+			log.Println(fmt.Sprintf("problems with %v, skip", path))
 		} else {
 			output = append(output, data)
 		}

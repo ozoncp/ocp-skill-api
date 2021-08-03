@@ -47,8 +47,8 @@ var _ = Describe("Flusher", func() {
 			BeforeEach(func() {
 				mockRepo.EXPECT().AddEntities(gomock.Any()).Return(nil).Times(2)
 			})
-			It("", func() {
-				Expect(result).ShouldNot(BeNil())
+			It("should be ok", func() {
+				Expect(result).Should(BeEquivalentTo(skills))
 				Expect(outError).Should(BeNil())
 			})
 		})
@@ -66,9 +66,9 @@ var _ = Describe("Flusher", func() {
 			BeforeEach(func() {
 				chunkSize = 0
 			})
-			It("", func() {
+			It("should be not ok", func() {
 				Expect(result).Should(BeEquivalentTo([]models.Skill{}))
-				Expect(outError).ShouldNot(BeNil())
+				Expect(outError).Should(BeEquivalentTo(errors.New("chunk size should be greater than 0")))
 			})
 		})
 	})

@@ -16,24 +16,26 @@ type Saver interface {
 type saver struct {
 	skills   []models.Skill
 	capacity uint
-	timeout  time.Duration
 	flusher  flusher.Flusher
 	close   chan bool
 	closed  bool
 	skillsChan chan models.Skill
 	mutex sync.Mutex
+	ticker *time.Ticker
 }
 
 func NewSaver(capacity uint,  flusher flusher.Flusher, timeout time.Duration) Saver  {
 	skillSaver := saver{
 		capacity: capacity,
 		flusher: flusher,
-		timeout: timeout,
+		ticker: time.NewTicker(timeout),
 	}
 
 	go func() {
-		ticker := time.NewTicker(skillSaver.timeout)
-		defer skillSaver.flush()
+		defer func() {
+			skillSaver.ticker.Stop()
+			skillSaver.flush()
+		}()
 
 		for {
 			select {
@@ -42,7 +44,7 @@ func NewSaver(capacity uint,  flusher flusher.Flusher, timeout time.Duration) Sa
 				if uint(len(skillSaver.skills)) == skillSaver.capacity {
 					_ = skillSaver.flush()
 				}
-			case <- ticker.C:
+			case <- skillSaver.ticker.C:
 				skillSaver.flush()
 			case <- skillSaver.close:
 				close(skillSaver.skillsChan)
@@ -69,6 +71,8 @@ func (s *saver) Save(skill models.Skill) error {
 }
 
 func (s *saver) Close() error {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 	if s.closed {
 		return errors.New("channels already closed")
 	}

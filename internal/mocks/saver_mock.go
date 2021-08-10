@@ -35,9 +35,11 @@ func (m *MockSaver) EXPECT() *MockSaverMockRecorder {
 }
 
 // Close mocks base method.
-func (m *MockSaver) Close() {
+func (m *MockSaver) Close() error {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Close")
+	ret := m.ctrl.Call(m, "Close")
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // Close indicates an expected call of Close.
@@ -47,9 +49,11 @@ func (mr *MockSaverMockRecorder) Close() *gomock.Call {
 }
 
 // Save mocks base method.
-func (m *MockSaver) Save(arg0 models.Skill) {
+func (m *MockSaver) Save(arg0 models.Skill) error {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Save", arg0)
+	ret := m.ctrl.Call(m, "Save", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // Save indicates an expected call of Save.

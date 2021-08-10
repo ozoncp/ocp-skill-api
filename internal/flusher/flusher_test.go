@@ -48,7 +48,7 @@ var _ = Describe("Flusher", func() {
 				mockRepo.EXPECT().AddEntities(gomock.Any()).Return(nil).Times(2)
 			})
 			It("should be ok", func() {
-				Expect(result).Should(BeEquivalentTo(skills))
+				Expect(result).Should(BeEquivalentTo([]models.Skill{}))
 				Expect(outError).Should(BeNil())
 			})
 		})
@@ -58,7 +58,7 @@ var _ = Describe("Flusher", func() {
 					{Id: 2, UserId: 1, Name: "Basic"}}).Return(errors.New("error")).Times(1)
 			})
 			It("with exception", func() {
-				Expect(result).Should(BeEquivalentTo([]models.Skill{}))
+				Expect(result).Should(BeEquivalentTo(skills))
 				Expect(outError).ShouldNot(BeNil())
 			})
 		})

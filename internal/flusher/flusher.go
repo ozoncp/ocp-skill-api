@@ -26,6 +26,7 @@ func NewFlusher(chunkSize int, entityRepo repo.Repo, ) Flusher {
 
 func (f *flusher) Flush(skills []models.Skill) ([]models.Skill, error) {
 	batches, error := utils.SkillsToBatches(skills, f.chunkSize)
+	counter := 0
 	added := make([]models.Skill, 0)
 
 	if error != nil {
@@ -34,10 +35,10 @@ func (f *flusher) Flush(skills []models.Skill) ([]models.Skill, error) {
 	for _, batch := range batches {
 		error := f.repo.AddEntities(batch)
 		if error != nil {
-			return added, error
+			return skills[counter:], error
 		}
-		added = append(added, batch...)
+		counter += len(batch)
 	}
 
-	return added, nil
+	return []models.Skill{}, nil
 }

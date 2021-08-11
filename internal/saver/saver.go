@@ -29,27 +29,30 @@ func NewSaver(capacity uint,  flusher flusher.Flusher, timeout time.Duration) Sa
 		capacity: capacity,
 		flusher: flusher,
 		ticker: time.NewTicker(timeout),
+		skillsChan: make(chan models.Skill),
+		close: make(chan bool),
 	}
 
 	go func() {
 		defer func() {
 			skillSaver.ticker.Stop()
-			skillSaver.flush()
+			close(skillSaver.skillsChan)
 		}()
 
 		for {
 			select {
 			case skill := <- skillSaver.skillsChan:
 				skillSaver.addSkill(skill)
-				if uint(len(skillSaver.skills)) == skillSaver.capacity {
-					_ = skillSaver.flush()
+				if uint(len(skillSaver.skills)) > skillSaver.capacity {
+					skillSaver.flush()
 				}
 			case <- skillSaver.ticker.C:
-				skillSaver.flush()
+				if len(skillSaver.skills) > 0 {
+					skillSaver.flush()
+				}
 			case <- skillSaver.close:
-				close(skillSaver.skillsChan)
-				close(skillSaver.close)
 				skillSaver.closed = true
+				return
 			}
 		}
 	}()
@@ -63,20 +66,19 @@ func (s *saver) addSkill(skill models.Skill) {
 	s.skills = append(s.skills, skill)
 }
 func (s *saver) Save(skill models.Skill) error {
+
 	if s.closed {
-		return errors.New("channels closed")
+		return errors.New("channel is closed")
 	}
 	s.skillsChan <- skill
 	return nil
 }
 
 func (s *saver) Close() error {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
 	if s.closed {
 		return errors.New("channels already closed")
 	}
-	s.close <- true
+	close(s.close)
 	return nil
 }
 
@@ -84,12 +86,17 @@ func (s *saver) flush() error{
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
+	if len(s.skills) == 0 {
+		return errors.New("nothing to send")
+	}
+
 	notAdded, err := s.flusher.Flush(s.skills)
+
 	if err != nil {
 		for _, skill := range notAdded {
 			s.skillsChan <- skill
 		}
 	}
-	s.skills = nil
+	s.skills = s.skills[:0]
 	return nil
 }

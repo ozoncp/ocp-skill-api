@@ -1,0 +1,233 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/ocp-skill-api/ocp-skill-api.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/skills": {
+      "post": {
+        "summary": "Create skill for user",
+        "operationId": "OcpSkillApi_CreateSkillV1",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiCreateSkillResponseV1"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiCreateSkillRequestV1"
+            }
+          }
+        ],
+        "tags": [
+          "OcpSkillApi"
+        ]
+      }
+    },
+    "/v1/skills/{id}": {
+      "get": {
+        "summary": "Get skill by id",
+        "operationId": "OcpSkillApi_DescribeSkillV1",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiDescribeSkillResponseV1"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "OcpSkillApi"
+        ]
+      },
+      "delete": {
+        "summary": "Remove skill by id",
+        "operationId": "OcpSkillApi_RemoveSkillV1",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "OcpSkillApi"
+        ]
+      }
+    },
+    "/v1/skills/{user_id}": {
+      "get": {
+        "summary": "Get skills for user",
+        "operationId": "OcpSkillApi_ListSkillsV1",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiListSkillsResponseV1"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "OcpSkillApi"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "apiCreateSkillRequestV1": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "apiCreateSkillResponseV1": {
+      "type": "object",
+      "properties": {
+        "skill": {
+          "$ref": "#/definitions/apiSkill"
+        }
+      }
+    },
+    "apiDescribeSkillResponseV1": {
+      "type": "object",
+      "properties": {
+        "skill": {
+          "$ref": "#/definitions/apiSkill"
+        }
+      }
+    },
+    "apiListSkillsResponseV1": {
+      "type": "object",
+      "properties": {
+        "skills": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiSkill"
+          }
+        }
+      }
+    },
+    "apiSkill": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "user_id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "title": "Skill model properties"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

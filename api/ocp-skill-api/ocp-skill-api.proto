@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+package ocp.skill.api;
+
+option go_package = "github.com/ozoncp/ocp-skill-api/pkg/ocp-skill-api;ocp_skill_api";
+
+service OcpSkillApi {
+  //Get skills for user
+  rpc ListSkillsV1(ListSkillsRequestV1) returns (ListSkillsResponseV1) {
+    option (google.api.http) = {
+      get: "/v1/skills/{user_id}"
+    };
+  }
+
+  //Create skill for user
+  rpc CreateSkillV1(CreateSkillRequestV1) returns (CreateSkillResponseV1) {
+    option (google.api.http) = {
+      post: "/v1/skills"
+      body: "*"
+    };
+  }
+
+  //Get skill by id
+  rpc DescribeSkillV1(DescribeSkillRequestV1) returns (DescribeSkillResponseV1) {
+    option (google.api.http) = {
+      get: "/v1/skills/{id}"
+    };
+  }
+
+  //Remove skill by id
+  rpc RemoveSkillV1(RemoveSkillRequestV1) returns (RemoveSkillResponseV1) {
+    option (google.api.http) = {
+      delete: "/v1/skills/{id}"
+    };
+  }
+}
+
+message CreateSkillRequestV1 {
+  int64  user_id = 1;
+  string name    = 2;
+}
+
+message CreateSkillResponseV1 {
+  Skill skill = 1;
+}
+
+message DescribeSkillRequestV1 {
+  int64 id = 1;
+}
+
+message DescribeSkillResponseV1 {
+  Skill skill = 1;
+}
+
+message ListSkillsRequestV1 {
+  int64 user_id = 1;
+}
+
+message ListSkillsResponseV1 {
+  repeated Skill skills = 1;
+}
+
+message RemoveSkillRequestV1 {
+  int64 id = 1;
+}
+
+message RemoveSkillResponseV1 {
+  int64 id = 1;
+}
+
+//Skill model properties
+message Skill {
+  int64 id      = 1;
+  int64 user_id = 2;
+  string name   = 3;
+}

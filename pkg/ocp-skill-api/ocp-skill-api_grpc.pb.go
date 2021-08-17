@@ -7,7 +7,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -26,7 +25,7 @@ type OcpSkillApiClient interface {
 	//Get skill by id
 	DescribeSkillV1(ctx context.Context, in *DescribeSkillRequestV1, opts ...grpc.CallOption) (*DescribeSkillResponseV1, error)
 	//Remove skill by id
-	RemoveSkillV1(ctx context.Context, in *RemoveSkillRequestV1, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	RemoveSkillV1(ctx context.Context, in *RemoveSkillRequestV1, opts ...grpc.CallOption) (*RemoveSkillResponseV1, error)
 }
 
 type ocpSkillApiClient struct {
@@ -64,8 +63,8 @@ func (c *ocpSkillApiClient) DescribeSkillV1(ctx context.Context, in *DescribeSki
 	return out, nil
 }
 
-func (c *ocpSkillApiClient) RemoveSkillV1(ctx context.Context, in *RemoveSkillRequestV1, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
+func (c *ocpSkillApiClient) RemoveSkillV1(ctx context.Context, in *RemoveSkillRequestV1, opts ...grpc.CallOption) (*RemoveSkillResponseV1, error) {
+	out := new(RemoveSkillResponseV1)
 	err := c.cc.Invoke(ctx, "/ocp.skill.api.OcpSkillApi/RemoveSkillV1", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -84,7 +83,7 @@ type OcpSkillApiServer interface {
 	//Get skill by id
 	DescribeSkillV1(context.Context, *DescribeSkillRequestV1) (*DescribeSkillResponseV1, error)
 	//Remove skill by id
-	RemoveSkillV1(context.Context, *RemoveSkillRequestV1) (*emptypb.Empty, error)
+	RemoveSkillV1(context.Context, *RemoveSkillRequestV1) (*RemoveSkillResponseV1, error)
 	mustEmbedUnimplementedOcpSkillApiServer()
 }
 
@@ -101,7 +100,7 @@ func (UnimplementedOcpSkillApiServer) CreateSkillV1(context.Context, *CreateSkil
 func (UnimplementedOcpSkillApiServer) DescribeSkillV1(context.Context, *DescribeSkillRequestV1) (*DescribeSkillResponseV1, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DescribeSkillV1 not implemented")
 }
-func (UnimplementedOcpSkillApiServer) RemoveSkillV1(context.Context, *RemoveSkillRequestV1) (*emptypb.Empty, error) {
+func (UnimplementedOcpSkillApiServer) RemoveSkillV1(context.Context, *RemoveSkillRequestV1) (*RemoveSkillResponseV1, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveSkillV1 not implemented")
 }
 func (UnimplementedOcpSkillApiServer) mustEmbedUnimplementedOcpSkillApiServer() {}

@@ -82,7 +82,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "properties": {}
+              "$ref": "#/definitions/apiRemoveSkillResponseV1"
             }
           },
           "default": {
@@ -176,6 +176,15 @@
           "items": {
             "$ref": "#/definitions/apiSkill"
           }
+        }
+      }
+    },
+    "apiRemoveSkillResponseV1": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },

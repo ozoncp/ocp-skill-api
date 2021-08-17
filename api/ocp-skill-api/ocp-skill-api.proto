@@ -31,7 +31,7 @@ service OcpSkillApi {
   }
 
   //Remove skill by id
-  rpc RemoveSkillV1(RemoveSkillRequestV1) returns (google.protobuf.Empty) {
+  rpc RemoveSkillV1(RemoveSkillRequestV1) returns (RemoveSkillResponseV1) {
     option (google.api.http) = {
       delete: "/v1/skills/{id}"
     };
@@ -64,6 +64,10 @@ message ListSkillsResponseV1 {
 }
 
 message RemoveSkillRequestV1 {
+  int64 id = 1;
+}
+
+message RemoveSkillResponseV1 {
   int64 id = 1;
 }
 

@@ -112,15 +112,7 @@ func (m *CreateSkillResponseV1) Validate() error {
 		return nil
 	}
 
-	if v, ok := interface{}(m.GetSkill()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return CreateSkillResponseV1ValidationError{
-				field:  "Skill",
-				reason: "embedded message failed validation",
-				cause:  err,
-			}
-		}
-	}
+	// no validation rules for Id
 
 	return nil
 }
@@ -336,6 +328,10 @@ func (m *ListSkillsRequestV1) Validate() error {
 	}
 
 	// no validation rules for UserId
+
+	// no validation rules for Limit
+
+	// no validation rules for Offset
 
 	return nil
 }

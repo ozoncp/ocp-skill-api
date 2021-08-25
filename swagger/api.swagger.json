@@ -68,7 +68,7 @@
             "in": "path",
             "required": true,
             "type": "string",
-            "format": "int64"
+            "format": "uint64"
           }
         ],
         "tags": [
@@ -98,7 +98,7 @@
             "in": "path",
             "required": true,
             "type": "string",
-            "format": "int64"
+            "format": "uint64"
           }
         ],
         "tags": [
@@ -130,7 +130,21 @@
             "in": "path",
             "required": true,
             "type": "string",
-            "format": "int64"
+            "format": "uint64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
           }
         ],
         "tags": [
@@ -145,7 +159,7 @@
       "properties": {
         "user_id": {
           "type": "string",
-          "format": "int64"
+          "format": "uint64"
         },
         "name": {
           "type": "string"
@@ -155,8 +169,9 @@
     "apiCreateSkillResponseV1": {
       "type": "object",
       "properties": {
-        "skill": {
-          "$ref": "#/definitions/apiSkill"
+        "id": {
+          "type": "string",
+          "format": "uint64"
         }
       }
     },
@@ -184,7 +199,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "format": "int64"
+          "format": "uint64"
         }
       }
     },
@@ -193,11 +208,11 @@
       "properties": {
         "id": {
           "type": "string",
-          "format": "int64"
+          "format": "uint64"
         },
         "user_id": {
           "type": "string",
-          "format": "int64"
+          "format": "uint64"
         },
         "name": {
           "type": "string"

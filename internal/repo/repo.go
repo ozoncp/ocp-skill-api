@@ -9,11 +9,11 @@ import (
 
 // Repo - interface for store Skill
 type Repo interface {
-	AddEntities(context context.Context, skills []models.Skill) error
-	AddEntity(context context.Context, skill models.Skill) (uint64, error)
-	ListEntities(context context.Context, limit, offset uint64) ([]models.Skill, error)
-	DescribeEntity(context context.Context, entityId uint64) (*models.Skill, error)
-	RemoveEntity(context context.Context, entityId uint64) (uint64, error)
+	AddSkills(context context.Context, skills []models.Skill) error
+	AddSkill(context context.Context, skill models.Skill) (uint64, error)
+	ListSkills(context context.Context, limit, offset uint64) ([]models.Skill, error)
+	DescribeSkill(context context.Context, skillId uint64) (*models.Skill, error)
+	RemoveSkill(context context.Context, skillId uint64) (uint64, error)
 }
 
 type repo struct {
@@ -26,7 +26,7 @@ func NewRepo(db *sqlx.DB) Repo {
 	}
 }
 
-func (r *repo) AddEntity(context context.Context, skill models.Skill) (uint64, error) {
+func (r *repo) AddSkill(context context.Context, skill models.Skill) (uint64, error) {
 	var result uint64
 
 	query := squirrel.
@@ -49,7 +49,7 @@ func (r *repo) AddEntity(context context.Context, skill models.Skill) (uint64, e
 	return result, nil
 }
 
-func (r *repo) AddEntities(context context.Context, skills []models.Skill) error {
+func (r *repo) AddSkills(context context.Context, skills []models.Skill) error {
 	query := squirrel.
 		Insert("skills").
 		Columns("user_id", "name").
@@ -68,8 +68,7 @@ func (r *repo) AddEntities(context context.Context, skills []models.Skill) error
 	return nil
 }
 
-func (r *repo) ListEntities(context context.Context, limit, offset uint64) ([]models.Skill, error) {
-	//var skills []models.Skill
+func (r *repo) ListSkills(context context.Context, limit, offset uint64) ([]models.Skill, error) {
 	query := squirrel.Select("id", "user_id", "name").
 		From("skills").
 		RunWith(r.db).
@@ -95,11 +94,11 @@ func (r *repo) ListEntities(context context.Context, limit, offset uint64) ([]mo
 	return skills, nil
 }
 
-func (r *repo) DescribeEntity(context context.Context, entityId uint64) (*models.Skill, error){
+func (r *repo) DescribeSkill(context context.Context, skillId uint64) (*models.Skill, error){
 	var skill models.Skill
 	query := squirrel.Select("id", "user_id", "name").
 			From("skills").
-		    Where(squirrel.Eq{"id": entityId}).
+		    Where(squirrel.Eq{"id": skillId}).
 			RunWith(r.db).
 			PlaceholderFormat(squirrel.Dollar)
 
@@ -113,17 +112,17 @@ func (r *repo) DescribeEntity(context context.Context, entityId uint64) (*models
 	return &skill, nil
 }
 
-func (r *repo) RemoveEntity(context context.Context, entityId uint64) (uint64, error) {
+func (r *repo) RemoveSkill(context context.Context, skillId uint64) (uint64, error) {
 
 	query := squirrel.Delete("skills").
-		Where(squirrel.Eq{"id": entityId}).
+		Where(squirrel.Eq{"id": skillId}).
 		RunWith(r.db).
 		PlaceholderFormat(squirrel.Dollar)
 	_, err := query.ExecContext(context)
 
 	if err != nil {
-		return entityId, err
+		return skillId, err
 	}
 
-	return entityId, nil
+	return skillId, nil
 }

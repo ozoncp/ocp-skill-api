@@ -18,10 +18,10 @@ type flusher struct {
 }
 
 // NewFlusher return Flusher with batches
-func NewFlusher(chunkSize int, entityRepo repo.Repo) Flusher {
+func NewFlusher(chunkSize int, skillRepo repo.Repo) Flusher {
 	return &flusher{
 		chunkSize: chunkSize,
-		repo:      entityRepo,
+		repo:      skillRepo,
 	}
 }
 
@@ -34,7 +34,7 @@ func (f *flusher) Flush(context context.Context,skills []models.Skill) ([]models
 		return added, error
 	}
 	for _, batch := range batches {
-		error := f.repo.AddEntities(context, batch)
+		error := f.repo.AddSkills(context, batch)
 		if error != nil {
 			return skills[counter:], error
 		}

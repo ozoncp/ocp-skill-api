@@ -19,20 +19,20 @@ func NewSkillAPI(repo repo.Repo) desc.OcpSkillApiServer {
 
 func (s *SkillAPI) ListSkillsV1(ctx context.Context, request *desc.ListSkillsRequestV1) (*desc.ListSkillsResponseV1, error) {
 	log.Printf("Show skills with params: %v", request)
-	entities, err := s.repo.ListEntities(ctx, request.Limit, request.Offset)
+	skills, err := s.repo.ListSkills(ctx, request.Limit, request.Offset)
 	if err != nil {
 		return nil, err
 	}
 
-	result := make([]*desc.Skill, 0, len(entities))
-	for _, entity := range entities {
-		skill := &desc.Skill{
-			Id:     entity.Id,
-			UserId: entity.UserId,
-			Name:   entity.Name,
+	result := make([]*desc.Skill, 0, len(skills))
+	for _, skill := range skills {
+		item := &desc.Skill{
+			Id:     skill.Id,
+			UserId: skill.UserId,
+			Name:   skill.Name,
 		}
 
-		result = append(result, skill)
+		result = append(result, item)
 	}
 
 	return &desc.ListSkillsResponseV1{Skills: result}, nil
@@ -44,14 +44,14 @@ func (s *SkillAPI) CreateSkillV1(ctx context.Context, request *desc.CreateSkillR
 		UserId: request.UserId,
 		Name:   request.Name,
 	}
-	skillId, err := s.repo.AddEntity(ctx, skill)
+	skillId, err := s.repo.AddSkill(ctx, skill)
 
 	return &desc.CreateSkillResponseV1{Id: skillId}, err
 }
 
 func (s *SkillAPI) DescribeSkillV1(ctx context.Context, request *desc.DescribeSkillRequestV1) (*desc.DescribeSkillResponseV1, error) {
 	log.Printf("Describe skill with params: %v", request)
-	skill, err := s.repo.DescribeEntity(ctx, request.Id)
+	skill, err := s.repo.DescribeSkill(ctx, request.Id)
 
 	if err != nil {
 		return nil, err
@@ -62,8 +62,7 @@ func (s *SkillAPI) DescribeSkillV1(ctx context.Context, request *desc.DescribeSk
 
 func (s *SkillAPI) RemoveSkillV1(ctx context.Context, request *desc.RemoveSkillRequestV1) (*desc.RemoveSkillResponseV1, error) {
 	log.Printf("Remove skill with params: %v", request)
-	result, err := s.repo.RemoveEntity(ctx, request.Id)
-
+	result, err := s.repo.RemoveSkill(ctx, request.Id)
 
 	return &desc.RemoveSkillResponseV1{Id: result}, err
 }

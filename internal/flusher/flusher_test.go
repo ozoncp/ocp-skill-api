@@ -48,7 +48,7 @@ var _ = Describe("Flusher", func() {
 	Context("Save in repository", func() {
 		Context("without exception", func() {
 			BeforeEach(func() {
-				mockRepo.EXPECT().AddEntities(ctx, gomock.Any()).Return(nil).Times(2)
+				mockRepo.EXPECT().AddSkills(ctx, gomock.Any()).Return(nil).Times(2)
 			})
 			It("should be ok", func() {
 				Expect(result).Should(BeEquivalentTo([]models.Skill{}))
@@ -57,7 +57,7 @@ var _ = Describe("Flusher", func() {
 		})
 		Context("with exception", func() {
 			BeforeEach(func() {
-				mockRepo.EXPECT().AddEntities(ctx, []models.Skill{{Id: 1, UserId: 1, Name: "Initial"},
+				mockRepo.EXPECT().AddSkills(ctx, []models.Skill{{Id: 1, UserId: 1, Name: "Initial"},
 					{Id: 2, UserId: 1, Name: "Basic"}}).Return(errors.New("error")).Times(1)
 			})
 			It("with exception", func() {

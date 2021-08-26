@@ -1,11 +1,12 @@
 package flusher_test
 
 import (
+	"context"
 	"errors"
 	"github.com/golang/mock/gomock"
+	"github.com/ozoncp/ocp-skill-api/internal/flusher"
 	"github.com/ozoncp/ocp-skill-api/internal/mocks"
 	"github.com/ozoncp/ocp-skill-api/internal/models"
-	"github.com/ozoncp/ocp-skill-api/internal/flusher"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -13,6 +14,7 @@ import (
 
 var _ = Describe("Flusher", func() {
 	var (
+		ctx 		 context.Context
 		ctrl         *gomock.Controller
 		mockRepo     *mocks.MockRepo
 		skills 		 []models.Skill
@@ -25,6 +27,7 @@ var _ = Describe("Flusher", func() {
 	BeforeEach(func() {
 		ctrl = gomock.NewController(GinkgoT())
 		mockRepo = mocks.NewMockRepo(ctrl)
+		ctx = context.Background()
 
 		skills = []models.Skill{{Id: 1, UserId: 1, Name: "Initial"},
 			{Id: 2, UserId: 1, Name: "Basic"},
@@ -40,12 +43,12 @@ var _ = Describe("Flusher", func() {
 
 	JustBeforeEach(func() {
 		f = flusher.NewFlusher(chunkSize, mockRepo)
-		result, outError = f.Flush(skills)
+		result, outError = f.Flush(ctx, skills)
 	})
 	Context("Save in repository", func() {
 		Context("without exception", func() {
 			BeforeEach(func() {
-				mockRepo.EXPECT().AddEntities(gomock.Any()).Return(nil).Times(2)
+				mockRepo.EXPECT().AddSkills(ctx, gomock.Any()).Return(nil).Times(2)
 			})
 			It("should be ok", func() {
 				Expect(result).Should(BeEquivalentTo([]models.Skill{}))
@@ -54,7 +57,7 @@ var _ = Describe("Flusher", func() {
 		})
 		Context("with exception", func() {
 			BeforeEach(func() {
-				mockRepo.EXPECT().AddEntities([]models.Skill{{Id: 1, UserId: 1, Name: "Initial"},
+				mockRepo.EXPECT().AddSkills(ctx, []models.Skill{{Id: 1, UserId: 1, Name: "Initial"},
 					{Id: 2, UserId: 1, Name: "Basic"}}).Return(errors.New("error")).Times(1)
 			})
 			It("with exception", func() {

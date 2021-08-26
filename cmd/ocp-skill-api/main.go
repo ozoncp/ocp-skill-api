@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/ozoncp/ocp-skill-api/internal/repo"
 	"log"
 	"net"
 	"net/http"
@@ -13,6 +14,8 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	desc "github.com/ozoncp/ocp-skill-api/pkg/ocp-skill-api"
 	api "github.com/ozoncp/ocp-skill-api/internal/api"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
 const (
@@ -26,8 +29,16 @@ func run() error {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
+	connectString := "host=db port=5432 user=postgres password=postgres dbname=postgres sslmode=disable"
+
+	db, err := sqlx.Connect("pgx", connectString)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer db.Close()
+
 	s := grpc.NewServer()
-	desc.RegisterOcpSkillApiServer(s, api.NewSkillAPI())
+	desc.RegisterOcpSkillApiServer(s, api.NewSkillAPI(repo.NewRepo(db)))
 
 	if err := s.Serve(listen); err != nil {
 		log.Fatalf("failed to serve: %v", err)

@@ -1,7 +1,6 @@
 syntax = "proto3";
 
 import "google/api/annotations.proto";
-import "google/protobuf/empty.proto";
 
 package ocp.skill.api;
 
@@ -39,16 +38,16 @@ service OcpSkillApi {
 }
 
 message CreateSkillRequestV1 {
-  int64  user_id = 1;
+  uint64  user_id = 1;
   string name    = 2;
 }
 
 message CreateSkillResponseV1 {
-  Skill skill = 1;
+  uint64 id = 1;
 }
 
 message DescribeSkillRequestV1 {
-  int64 id = 1;
+  uint64 id = 1;
 }
 
 message DescribeSkillResponseV1 {
@@ -56,7 +55,9 @@ message DescribeSkillResponseV1 {
 }
 
 message ListSkillsRequestV1 {
-  int64 user_id = 1;
+  uint64 user_id = 1;
+  uint64 limit = 2;
+  uint64 offset = 3;
 }
 
 message ListSkillsResponseV1 {
@@ -64,16 +65,16 @@ message ListSkillsResponseV1 {
 }
 
 message RemoveSkillRequestV1 {
-  int64 id = 1;
+  uint64 id = 1;
 }
 
 message RemoveSkillResponseV1 {
-  int64 id = 1;
+  uint64 id = 1;
 }
 
 //Skill model properties
 message Skill {
-  int64 id      = 1;
-  int64 user_id = 2;
-  string name   = 3;
+  uint64 id      = 1;
+  uint64 user_id = 2;
+  string name    = 3;
 }

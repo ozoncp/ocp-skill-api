@@ -1,6 +1,7 @@
 package saver
 
 import (
+	"context"
 	"errors"
 	"github.com/ozoncp/ocp-skill-api/internal/flusher"
 	"github.com/ozoncp/ocp-skill-api/internal/models"
@@ -83,6 +84,8 @@ func (s *saver) Close() error {
 }
 
 func (s *saver) flush() error{
+	context := context.Background()
+
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
@@ -90,7 +93,7 @@ func (s *saver) flush() error{
 		return errors.New("nothing to send")
 	}
 
-	notAdded, err := s.flusher.Flush(s.skills)
+	notAdded, err := s.flusher.Flush(context, s.skills)
 
 	if err != nil {
 		for _, skill := range notAdded {

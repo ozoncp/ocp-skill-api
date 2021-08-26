@@ -1,6 +1,7 @@
 package saver_test
 
 import (
+	"context"
 	"errors"
 	"github.com/golang/mock/gomock"
 	"github.com/ozoncp/ocp-skill-api/internal/mocks"
@@ -14,6 +15,7 @@ import (
 
 var _ = Describe("Saver", func() {
 	var (
+		ctx      context.Context
 		ctrl         *gomock.Controller
 		mockFlusher  *mocks.MockFlusher
 		s 			 saver.Saver
@@ -23,6 +25,7 @@ var _ = Describe("Saver", func() {
 	)
 
 	BeforeEach(func() {
+		ctx = context.Background()
 		ctrl = gomock.NewController(GinkgoT())
 		mockFlusher = mocks.NewMockFlusher(ctrl)
 
@@ -45,7 +48,7 @@ var _ = Describe("Saver", func() {
 	Context("Save in repository", func() {
 		Context("without error", func() {
 			BeforeEach(func() {
-				mockFlusher.EXPECT().Flush([]models.Skill{{Id: 2, UserId: 1, Name: "Basic"},
+				mockFlusher.EXPECT().Flush(ctx, []models.Skill{{Id: 2, UserId: 1, Name: "Basic"},
 					{Id:1, UserId: 1, Name: "Initial"}}).Times(1)
 			})
 			It("should be ok", func() {

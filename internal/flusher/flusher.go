@@ -1,6 +1,7 @@
 package flusher
 
 import (
+	"context"
 	"github.com/ozoncp/ocp-skill-api/internal/models"
 	"github.com/ozoncp/ocp-skill-api/internal/repo"
 	"github.com/ozoncp/ocp-skill-api/internal/utils"
@@ -8,7 +9,7 @@ import (
 
 // Flusher - interface for store
 type Flusher interface {
-	Flush(skills []models.Skill) ([]models.Skill, error)
+	Flush(context context.Context, skills []models.Skill) ([]models.Skill, error)
 }
 
 type flusher struct {
@@ -17,14 +18,14 @@ type flusher struct {
 }
 
 // NewFlusher return Flusher with batches
-func NewFlusher(chunkSize int, entityRepo repo.Repo, ) Flusher {
+func NewFlusher(chunkSize int, skillRepo repo.Repo) Flusher {
 	return &flusher{
 		chunkSize: chunkSize,
-		repo:      entityRepo,
+		repo:      skillRepo,
 	}
 }
 
-func (f *flusher) Flush(skills []models.Skill) ([]models.Skill, error) {
+func (f *flusher) Flush(context context.Context,skills []models.Skill) ([]models.Skill, error) {
 	batches, error := utils.SkillsToBatches(skills, f.chunkSize)
 	counter := 0
 	added := make([]models.Skill, 0)
@@ -33,7 +34,7 @@ func (f *flusher) Flush(skills []models.Skill) ([]models.Skill, error) {
 		return added, error
 	}
 	for _, batch := range batches {
-		error := f.repo.AddEntities(batch)
+		error := f.repo.AddSkills(context, batch)
 		if error != nil {
 			return skills[counter:], error
 		}

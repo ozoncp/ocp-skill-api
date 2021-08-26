@@ -14,6 +14,7 @@ type Repo interface {
 	ListSkills(context context.Context, limit, offset uint64) ([]models.Skill, error)
 	DescribeSkill(context context.Context, skillId uint64) (*models.Skill, error)
 	RemoveSkill(context context.Context, skillId uint64) (uint64, error)
+	UpdateSkill(context context.Context, skill models.Skill) (uint64, error)
 }
 
 type repo struct {
@@ -125,4 +126,21 @@ func (r *repo) RemoveSkill(context context.Context, skillId uint64) (uint64, err
 	}
 
 	return skillId, nil
+}
+
+func (r *repo)  UpdateSkill(context context.Context, skill models.Skill) (uint64, error) {
+	query := squirrel.Update("skills").
+		Set("user_id", skill.UserId).
+		Set("name", skill.Name).
+		Where(squirrel.Eq{"id": skill.Id}).
+		RunWith(r.db).
+		PlaceholderFormat(squirrel.Dollar)
+
+	_, err := query.ExecContext(context)
+
+	if err != nil {
+		return skill.Id, err
+	}
+
+	return skill.Id, nil
 }

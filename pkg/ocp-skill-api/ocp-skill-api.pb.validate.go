@@ -33,6 +33,299 @@ var (
 	_ = ptypes.DynamicAny{}
 )
 
+// Validate checks the field values on UpdateSkillRequestV1 with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *UpdateSkillRequestV1) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	// no validation rules for Id
+
+	// no validation rules for UserId
+
+	// no validation rules for Name
+
+	return nil
+}
+
+// UpdateSkillRequestV1ValidationError is the validation error returned by
+// UpdateSkillRequestV1.Validate if the designated constraints aren't met.
+type UpdateSkillRequestV1ValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UpdateSkillRequestV1ValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UpdateSkillRequestV1ValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UpdateSkillRequestV1ValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UpdateSkillRequestV1ValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UpdateSkillRequestV1ValidationError) ErrorName() string {
+	return "UpdateSkillRequestV1ValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UpdateSkillRequestV1ValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUpdateSkillRequestV1.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UpdateSkillRequestV1ValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UpdateSkillRequestV1ValidationError{}
+
+// Validate checks the field values on UpdateSkillResponseV1 with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *UpdateSkillResponseV1) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	// no validation rules for Id
+
+	return nil
+}
+
+// UpdateSkillResponseV1ValidationError is the validation error returned by
+// UpdateSkillResponseV1.Validate if the designated constraints aren't met.
+type UpdateSkillResponseV1ValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UpdateSkillResponseV1ValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UpdateSkillResponseV1ValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UpdateSkillResponseV1ValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UpdateSkillResponseV1ValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UpdateSkillResponseV1ValidationError) ErrorName() string {
+	return "UpdateSkillResponseV1ValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UpdateSkillResponseV1ValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUpdateSkillResponseV1.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UpdateSkillResponseV1ValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UpdateSkillResponseV1ValidationError{}
+
+// Validate checks the field values on MultiCreateSkillRequestV1 with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *MultiCreateSkillRequestV1) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	for idx, item := range m.GetSkills() {
+		_, _ = idx, item
+
+		if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return MultiCreateSkillRequestV1ValidationError{
+					field:  fmt.Sprintf("Skills[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// MultiCreateSkillRequestV1ValidationError is the validation error returned by
+// MultiCreateSkillRequestV1.Validate if the designated constraints aren't met.
+type MultiCreateSkillRequestV1ValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e MultiCreateSkillRequestV1ValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e MultiCreateSkillRequestV1ValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e MultiCreateSkillRequestV1ValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e MultiCreateSkillRequestV1ValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e MultiCreateSkillRequestV1ValidationError) ErrorName() string {
+	return "MultiCreateSkillRequestV1ValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e MultiCreateSkillRequestV1ValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sMultiCreateSkillRequestV1.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = MultiCreateSkillRequestV1ValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = MultiCreateSkillRequestV1ValidationError{}
+
+// Validate checks the field values on MultiCreateSkillResponseV1 with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *MultiCreateSkillResponseV1) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	// no validation rules for Added
+
+	return nil
+}
+
+// MultiCreateSkillResponseV1ValidationError is the validation error returned
+// by MultiCreateSkillResponseV1.Validate if the designated constraints aren't met.
+type MultiCreateSkillResponseV1ValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e MultiCreateSkillResponseV1ValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e MultiCreateSkillResponseV1ValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e MultiCreateSkillResponseV1ValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e MultiCreateSkillResponseV1ValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e MultiCreateSkillResponseV1ValidationError) ErrorName() string {
+	return "MultiCreateSkillResponseV1ValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e MultiCreateSkillResponseV1ValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sMultiCreateSkillResponseV1.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = MultiCreateSkillResponseV1ValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = MultiCreateSkillResponseV1ValidationError{}
+
 // Validate checks the field values on CreateSkillRequestV1 with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, an error is returned.

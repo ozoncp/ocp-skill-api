@@ -35,10 +35,44 @@ service OcpSkillApi {
       delete: "/v1/skills/{id}"
     };
   }
+
+  //Update skill
+  rpc UpdateSkillV1(UpdateSkillRequestV1) returns (UpdateSkillResponseV1) {
+    option (google.api.http) = {
+      put: "/v1/skills/{id}"
+      body: "*"
+    };
+  }
+
+  //Add multi skills
+  rpc MultiCreateSkillsV1(MultiCreateSkillRequestV1) returns (MultiCreateSkillResponseV1) {
+    option (google.api.http) = {
+      post: "/v1/skills/bulk"
+      body: "*"
+    };
+  }
+}
+
+message UpdateSkillRequestV1 {
+  uint64 id      = 1;
+  uint64 user_id = 2;
+  string name    = 3;
+}
+
+message UpdateSkillResponseV1 {
+  uint64 id = 1;
+}
+
+message MultiCreateSkillRequestV1 {
+  repeated Skill skills = 1;
+}
+
+message MultiCreateSkillResponseV1 {
+  uint64 added = 1;
 }
 
 message CreateSkillRequestV1 {
-  uint64  user_id = 1;
+  uint64 user_id = 1;
   string name    = 2;
 }
 

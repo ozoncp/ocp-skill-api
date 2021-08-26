@@ -44,6 +44,39 @@
         ]
       }
     },
+    "/v1/skills/bulk": {
+      "post": {
+        "summary": "Add multi skills",
+        "operationId": "OcpSkillApi_MultiCreateSkillsV1",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiMultiCreateSkillResponseV1"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiMultiCreateSkillRequestV1"
+            }
+          }
+        ],
+        "tags": [
+          "OcpSkillApi"
+        ]
+      }
+    },
     "/v1/skills/{id}": {
       "get": {
         "summary": "Get skill by id",
@@ -99,6 +132,44 @@
             "required": true,
             "type": "string",
             "format": "uint64"
+          }
+        ],
+        "tags": [
+          "OcpSkillApi"
+        ]
+      },
+      "put": {
+        "summary": "Update skill",
+        "operationId": "OcpSkillApi_UpdateSkillV1",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiUpdateSkillResponseV1"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiUpdateSkillRequestV1"
+            }
           }
         ],
         "tags": [
@@ -194,6 +265,26 @@
         }
       }
     },
+    "apiMultiCreateSkillRequestV1": {
+      "type": "object",
+      "properties": {
+        "skills": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiSkill"
+          }
+        }
+      }
+    },
+    "apiMultiCreateSkillResponseV1": {
+      "type": "object",
+      "properties": {
+        "added": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
     "apiRemoveSkillResponseV1": {
       "type": "object",
       "properties": {
@@ -219,6 +310,31 @@
         }
       },
       "title": "Skill model properties"
+    },
+    "apiUpdateSkillRequestV1": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "user_id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "apiUpdateSkillResponseV1": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
     },
     "protobufAny": {
       "type": "object",

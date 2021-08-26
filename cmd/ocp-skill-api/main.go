@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/ozoncp/ocp-skill-api/internal/repo"
+	"io"
 	"log"
 	"net"
 	"net/http"
@@ -12,7 +12,13 @@ import (
 	"context"
 	"google.golang.org/grpc"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	jaegercfg "github.com/uber/jaeger-client-go/config"
 	desc "github.com/ozoncp/ocp-skill-api/pkg/ocp-skill-api"
+	"github.com/opentracing/opentracing-go"
+	"github.com/ozoncp/ocp-skill-api/internal/producer"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/ozoncp/ocp-skill-api/internal/repo"
+	"github.com/uber/jaeger-client-go"
 	api "github.com/ozoncp/ocp-skill-api/internal/api"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/jackc/pgx/v4/stdlib"
@@ -36,9 +42,13 @@ func run() error {
 		log.Fatalln(err)
 	}
 	defer db.Close()
+	kafka, err := producer.NewProducer([]string{"kafka:9092"}, "skills")
+	if err != nil {
+		log.Fatalf("failed to connect kafka: %v", err)
+	}
 
 	s := grpc.NewServer()
-	desc.RegisterOcpSkillApiServer(s, api.NewSkillAPI(repo.NewRepo(db)))
+	desc.RegisterOcpSkillApiServer(s, api.NewSkillAPI(repo.NewRepo(db), kafka))
 
 	if err := s.Serve(listen); err != nil {
 		log.Fatalf("failed to serve: %v", err)
@@ -66,8 +76,58 @@ func runJSON() {
 	}
 }
 
+func initJaeger(address string) (io.Closer, error) {
+	cfgMetrics := &jaegercfg.Configuration{
+		ServiceName: "ocp-skill-api",
+		Sampler: &jaegercfg.SamplerConfig{
+			Type:  jaeger.SamplerTypeConst,
+			Param: 1,
+		},
+		Reporter: &jaegercfg.ReporterConfig{
+			LogSpans: true,
+		},
+	}
+	tracer, closer, err := cfgMetrics.NewTracer(
+		jaegercfg.Logger(jaeger.StdLogger),
+	)
+	if err != nil {
+		return nil, err
+	}
+	opentracing.SetGlobalTracer(tracer)
+
+	return closer, nil
+}
+
+func createMetricsServer() *http.Server {
+
+	mux := http.DefaultServeMux
+	mux.Handle("/metrics", promhttp.Handler())
+
+	metricsServer := &http.Server{
+		Addr:    "localhost:9100",
+		Handler: mux,
+	}
+
+	return metricsServer
+}
+
+
+
 func main() {
 	fmt.Println("This is Skill API")
+	metricsServer := createMetricsServer()
+
+	go func() {
+		if err := metricsServer.ListenAndServe(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	jaegerRunner, err := initJaeger("jaeger:6831")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer jaegerRunner.Close()
 	go runJSON()
 	if err := run(); err != nil {
 		log.Fatal(err)

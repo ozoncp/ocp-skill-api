@@ -34,5 +34,5 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=builder /home/developer/go/src/github.com/ozoncp/ocp-skill-api/bin/ocp-skill-api .
 RUN chown root:root ocp-skill-api
-EXPOSE 82
+EXPOSE 82 9100
 CMD ["./ocp-skill-api"]

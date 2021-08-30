@@ -34,7 +34,6 @@ func (r *repo) AddSkill(context context.Context, skill models.Skill) (uint64, er
 		Insert("skills").
 		Columns("user_id", "name").
 		RunWith(r.db).
-		Suffix("RETURNING \"id\"").
 		PlaceholderFormat(squirrel.Dollar).
 		Values(skill.UserId, skill.Name)
 

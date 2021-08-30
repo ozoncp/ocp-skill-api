@@ -26,6 +26,10 @@ type OcpSkillApiClient interface {
 	DescribeSkillV1(ctx context.Context, in *DescribeSkillRequestV1, opts ...grpc.CallOption) (*DescribeSkillResponseV1, error)
 	//Remove skill by id
 	RemoveSkillV1(ctx context.Context, in *RemoveSkillRequestV1, opts ...grpc.CallOption) (*RemoveSkillResponseV1, error)
+	//Update skill
+	UpdateSkillV1(ctx context.Context, in *UpdateSkillRequestV1, opts ...grpc.CallOption) (*UpdateSkillResponseV1, error)
+	//Add multi skills
+	MultiCreateSkillsV1(ctx context.Context, in *MultiCreateSkillRequestV1, opts ...grpc.CallOption) (*MultiCreateSkillResponseV1, error)
 }
 
 type ocpSkillApiClient struct {
@@ -72,6 +76,24 @@ func (c *ocpSkillApiClient) RemoveSkillV1(ctx context.Context, in *RemoveSkillRe
 	return out, nil
 }
 
+func (c *ocpSkillApiClient) UpdateSkillV1(ctx context.Context, in *UpdateSkillRequestV1, opts ...grpc.CallOption) (*UpdateSkillResponseV1, error) {
+	out := new(UpdateSkillResponseV1)
+	err := c.cc.Invoke(ctx, "/ocp.skill.api.OcpSkillApi/UpdateSkillV1", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ocpSkillApiClient) MultiCreateSkillsV1(ctx context.Context, in *MultiCreateSkillRequestV1, opts ...grpc.CallOption) (*MultiCreateSkillResponseV1, error) {
+	out := new(MultiCreateSkillResponseV1)
+	err := c.cc.Invoke(ctx, "/ocp.skill.api.OcpSkillApi/MultiCreateSkillsV1", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OcpSkillApiServer is the server API for OcpSkillApi service.
 // All implementations must embed UnimplementedOcpSkillApiServer
 // for forward compatibility
@@ -84,6 +106,10 @@ type OcpSkillApiServer interface {
 	DescribeSkillV1(context.Context, *DescribeSkillRequestV1) (*DescribeSkillResponseV1, error)
 	//Remove skill by id
 	RemoveSkillV1(context.Context, *RemoveSkillRequestV1) (*RemoveSkillResponseV1, error)
+	//Update skill
+	UpdateSkillV1(context.Context, *UpdateSkillRequestV1) (*UpdateSkillResponseV1, error)
+	//Add multi skills
+	MultiCreateSkillsV1(context.Context, *MultiCreateSkillRequestV1) (*MultiCreateSkillResponseV1, error)
 	mustEmbedUnimplementedOcpSkillApiServer()
 }
 
@@ -102,6 +128,12 @@ func (UnimplementedOcpSkillApiServer) DescribeSkillV1(context.Context, *Describe
 }
 func (UnimplementedOcpSkillApiServer) RemoveSkillV1(context.Context, *RemoveSkillRequestV1) (*RemoveSkillResponseV1, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveSkillV1 not implemented")
+}
+func (UnimplementedOcpSkillApiServer) UpdateSkillV1(context.Context, *UpdateSkillRequestV1) (*UpdateSkillResponseV1, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateSkillV1 not implemented")
+}
+func (UnimplementedOcpSkillApiServer) MultiCreateSkillsV1(context.Context, *MultiCreateSkillRequestV1) (*MultiCreateSkillResponseV1, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MultiCreateSkillsV1 not implemented")
 }
 func (UnimplementedOcpSkillApiServer) mustEmbedUnimplementedOcpSkillApiServer() {}
 
@@ -188,6 +220,42 @@ func _OcpSkillApi_RemoveSkillV1_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OcpSkillApi_UpdateSkillV1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateSkillRequestV1)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OcpSkillApiServer).UpdateSkillV1(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ocp.skill.api.OcpSkillApi/UpdateSkillV1",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OcpSkillApiServer).UpdateSkillV1(ctx, req.(*UpdateSkillRequestV1))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OcpSkillApi_MultiCreateSkillsV1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MultiCreateSkillRequestV1)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OcpSkillApiServer).MultiCreateSkillsV1(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ocp.skill.api.OcpSkillApi/MultiCreateSkillsV1",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OcpSkillApiServer).MultiCreateSkillsV1(ctx, req.(*MultiCreateSkillRequestV1))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OcpSkillApi_ServiceDesc is the grpc.ServiceDesc for OcpSkillApi service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -210,6 +278,14 @@ var OcpSkillApi_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveSkillV1",
 			Handler:    _OcpSkillApi_RemoveSkillV1_Handler,
+		},
+		{
+			MethodName: "UpdateSkillV1",
+			Handler:    _OcpSkillApi_UpdateSkillV1_Handler,
+		},
+		{
+			MethodName: "MultiCreateSkillsV1",
+			Handler:    _OcpSkillApi_MultiCreateSkillsV1_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

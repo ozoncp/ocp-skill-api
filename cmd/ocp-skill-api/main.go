@@ -104,7 +104,7 @@ func createMetricsServer() *http.Server {
 	mux.Handle("/metrics", promhttp.Handler())
 
 	metricsServer := &http.Server{
-		Addr:    "localhost:9100",
+		Addr:    ":9100",
 		Handler: mux,
 	}
 
@@ -123,7 +123,7 @@ func main() {
 		}
 	}()
 
-	jaegerRunner, err := initJaeger("jaeger:6831")
+	jaegerRunner, err := initJaeger("0.0.0.0:6831")
 	if err != nil {
 		log.Fatal(err)
 	}
